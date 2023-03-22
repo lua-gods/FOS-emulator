@@ -1,0 +1,3 @@
+return {
+    playSound = function() end
+}
