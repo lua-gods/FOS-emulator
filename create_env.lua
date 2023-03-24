@@ -72,7 +72,7 @@ local env = {
 
     matrices = require("apis.matrices"), -- minimum
 
-    host = utils.read_only_table(require("apis.host")),
+    host = {_need_env = true, func = require("apis.host")},
 
     avatar = {_need_env = true, func = require("apis.avatar")},
 
@@ -142,10 +142,23 @@ local function create_env(path)
             if not success then
                 system.error = output_error or ""
                 print("fos emulator error:")
-                print(output_error or "")
+                print(system.error)
             end
         else
             print("could not run: "..code)
+        end
+    end
+
+    function system.call(func)
+        if system.error then
+            return
+        end
+
+        local success, output_error = pcall(func)
+        if not success then
+            system.error = output_error or ""
+            print("fos emulator error:")
+            print(system.error)
         end
     end
 

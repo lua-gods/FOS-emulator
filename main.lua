@@ -44,8 +44,10 @@ function love.update(delta)
     end
     fos_system.run('events.RENDER('..tick..', "FIRST_PERSON")')
 
-    for _, v in ipairs(fos_system.update) do
-        v(delta)
+    if not fos_system.error then 
+        for _, v in ipairs(fos_system.update) do
+            v(delta)
+        end
     end
 
     -- touch input

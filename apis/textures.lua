@@ -62,6 +62,8 @@ local function create_texture_api(env, path, system)
                 texture:setPixel(x, y, vec(r, g, b, a))
             end
         end
+
+        imageData:release()
         
         return texture
     end
@@ -71,6 +73,26 @@ local function create_texture_api(env, path, system)
     end
     
     -- object --
+    function texture_api:save()
+        local w, h = self.width, self.height
+
+        local imageData = love.image.newImageData(w, h)
+
+        for y = 0, h - 1 do
+            for x = 0, w - 1 do
+                local color = self:getPixel(x, y)
+                local r, g, b, a = color.r, color.g, color.b, color.a
+                imageData:setPixel(x, y, r, g, b, a)
+            end
+        end
+
+        local base64 = love.data.encode("string", "base64", imageData:encode("png"))
+
+        imageData:release()
+
+        return base64
+    end
+
     function texture_api:getDimensions()
         return vec(self.width, self.height)
     end

@@ -30,7 +30,7 @@ local function create_keybinds_api(env, path, system)
         for i, v in pairs(list) do
             if v.KEY == key then
                 if v[action] then
-                    v[action]()
+                    system.call(v[action])
                 end
             end
         end

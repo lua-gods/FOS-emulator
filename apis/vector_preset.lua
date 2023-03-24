@@ -222,26 +222,42 @@ metatable = {
         return '{'..table.concat(t, ",").."}"
     end,
     __mod = function(a, b)
-        a = a:copy()
-        if env_type(b) == vector_type then
-            --repeatN
-            ;a[_N] = a[_N] % b[_N];
+        if env_type(a) == vector_type then
+            a = a:copy()
+            if env_type(b) == vector_type then
+                --repeatN
+                ;a[_N] = a[_N] % b[_N];
+                return a
+            else
+                --repeatN
+                ;a[_N] = a[_N] % b;
+                return a
+            end
         else
+            b = b:copy()
             --repeatN
-            ;a[_N] = a[_N] % b;
+            ;b[_N] = a % b[_N];
+            return b
         end
-        return a
     end,
     __add = function(a, b)
-        a = a:copy()
-        if env_type(b) == vector_type then
-            --repeatN
-            ;a[_N] = a[_N] + b[_N];
+        if env_type(a) == vector_type then
+            a = a:copy()
+            if env_type(b) == vector_type then
+                --repeatN
+                ;a[_N] = a[_N] + b[_N];
+                return a
+            else
+                --repeatN
+                ;a[_N] = a[_N] + b;
+                return a
+            end
         else
+            b = b:copy()
             --repeatN
-            ;a[_N] = a[_N] + b;
+            ;b[_N] = a + b[_N];
+            return b
         end
-        return a
     end,
     __unm = function(a)
         a = a:copy()
@@ -259,42 +275,66 @@ metatable = {
             return false
         end
     end,
-    __len = function(a, b)
+    __len = function()
         --setN
         return _N
     end,
     __mul = function(a, b)
-        a = a:copy()
-        if env_type(b) == vector_type then
-            --repeatN
-            ;a[_N] = a[_N] * b[_N];
+        if env_type(a) == vector_type then
+            a = a:copy()
+            if env_type(b) == vector_type then
+                --repeatN
+                ;a[_N] = a[_N] * b[_N];
+                return a
+            else
+                --repeatN
+                ;a[_N] = a[_N] * b;
+                return a
+            end
         else
+            b = b:copy()
             --repeatN
-            ;a[_N] = a[_N] * b;
+            ;b[_N] = a * b[_N];
+            return b
         end
-        return a
     end,
     __sub = function(a, b)
-        a = a:copy()
-        if env_type(b) == vector_type then
-            --repeatN
-            ;a[_N] = a[_N] - b[_N];
+        if env_type(a) == vector_type then
+            a = a:copy()
+            if env_type(b) == vector_type then
+                --repeatN
+                ;a[_N] = a[_N] - b[_N];
+                return a
+            else
+                --repeatN
+                ;a[_N] = a[_N] - b;
+                return a
+            end
         else
+            b = b:copy()
             --repeatN
-            ;a[_N] = a[_N] - b;
+            ;b[_N] = a - b[_N];
+            return b
         end
-        return a
     end,
     __div = function(a, b)
-        a = a:copy()
-        if env_type(b) == vector_type then
-            --repeatN
-            ;a[_N] = a[_N] / b[_N];
+        if env_type(a) == vector_type then
+            a = a:copy()
+            if env_type(b) == vector_type then
+                --repeatN
+                ;a[_N] = a[_N] / b[_N];
+                return a
+            else
+                --repeatN
+                ;a[_N] = a[_N] / b;
+                return a
+            end
         else
+            b = b:copy()
             --repeatN
-            ;a[_N] = a[_N] / b;
+            ;b[_N] = a / b[_N];
+            return b
         end
-        return a
     end,
     __lt = function(a, b)
         --repeatN

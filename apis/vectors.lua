@@ -63,7 +63,7 @@ local function make_vec_n(n)
     end
 
     -- load
-    local func, err = loadstring("return function(create_vector) "..table.concat(lines, "\n").." end")
+    local func, err = loadstring("--[[|FOS_EMULATOR|".."Vector"..n.."|]] return function(create_vector) "..table.concat(lines, "\n").." end")
     if func then
         local vec_creator = func()(vectors.vec)
         vector_types[n] = vec_creator
