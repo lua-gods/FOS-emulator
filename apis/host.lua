@@ -2,7 +2,19 @@ local function create_host_api(env, path, system)
     local host = {}
 
     function host:getChatText()
-        return nil
+        if system.chattext and type(env.PUBLIC_REGISTRY) == "table" then
+            local prefix = rawget(env.PUBLIC_REGISTRY, "keyboard_prefix")
+            if prefix then
+                return tostring(prefix)..system.chattext
+            end
+        end
+        return system.chattext
+    end
+
+    function host:setChatColor()
+    end
+
+    function host:appendChatHistory()
     end
 
     function host:screenshot(name)

@@ -6,11 +6,11 @@ local update_canvas = require "apis.canvas"
 local touch_input = require "touch_input"
 
 function love.load()
+    love.keyboard.setKeyRepeat(true)
+
     fos_system = create_env("fos/")
     
     fos_system.run('require("FOS.OS")')
-
-    fos_system.run('APP.apps["root:home"].pages.main[8] = { text = "A"}')
 
     screen_orientation = "unknown"
 end
@@ -40,9 +40,9 @@ function love.update(delta)
     tick = tick + delta * 20
     if tick >= 1 then
         tick = tick % 1
-        fos_system.run('events.TICK()')
+        fos_system.call(fos_system.events.TICK)
     end
-    fos_system.run('events.RENDER('..tick..', "FIRST_PERSON")')
+    fos_system.call(fos_system.events.RENDER, math.floor(tick * 1000) / 1000)
 
     if not fos_system.error then 
         for _, v in ipairs(fos_system.update) do
@@ -52,6 +52,22 @@ function love.update(delta)
 
     -- touch input
     touch_input(delta, fos_system)
+end
+
+function love.textinput(text)
+    if not fos_system.error then 
+        for _, v in ipairs(fos_system.textinput) do
+            v(text)
+        end
+    end
+end
+
+function love.keypressed(key)
+    if not fos_system.error then 
+        for _, v in ipairs(fos_system.keypressed) do
+            v(key)
+        end
+    end
 end
 
 function love.draw()

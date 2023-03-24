@@ -99,7 +99,10 @@ local function create_env(path)
         env = utils.copy_table(env),
         error = nil,
         update = {},
-        keybinds = {}
+        textinput = {},
+        keypressed = {},
+        keybinds = {},
+        chattext = nil
     }
     system.env._G = system.env
     system.env._GS = system.env
@@ -149,12 +152,12 @@ local function create_env(path)
         end
     end
 
-    function system.call(func)
+    function system.call(func, ...)
         if system.error then
             return
         end
 
-        local success, output_error = pcall(func)
+        local success, output_error = pcall(func, ...)
         if not success then
             system.error = output_error or ""
             print("fos emulator error:")

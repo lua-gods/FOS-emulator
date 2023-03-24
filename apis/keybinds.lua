@@ -8,6 +8,8 @@ local key_map = {
 }
 
 local function create_keybinds_api(env, path, system)
+    local keyboard_enabled = false
+    local keys_disabled = false
     local keybinds = {}
     
     local list = {}
@@ -38,8 +40,16 @@ local function create_keybinds_api(env, path, system)
     
     -- update
     table.insert(system.update, function()
+        local keep_keys_disabled = false
         for key, figura_key in pairs(key_map) do
             local pressed = love.keyboard.isDown(key) or system.keybinds[figura_key]
+            if pressed and keys_disabled then
+                keep_keys_disabled = true
+                pressed = false
+            end
+            if keyboard_enabled then
+                pressed = false
+            end
             if pressed ~= was_pressed[figura_key] then
                 if pressed then
                     key_action(figura_key, "press")
@@ -47,6 +57,52 @@ local function create_keybinds_api(env, path, system)
                     key_action(figura_key, "release")
                 end
                 was_pressed[figura_key] = pressed
+            end
+        end
+        keys_disabled = keep_keys_disabled
+    end)
+
+
+    -- text input
+    table.insert(system.textinput, function(text)
+        if keyboard_enabled then
+            if system.chattext then
+                if #text == 1 then
+                    system.chattext = system.chattext..text
+                end
+            else
+                system.chattext = ""
+            end
+        end
+    end)
+
+    -- key pressed
+    table.insert(system.keypressed, function(key)
+        if keyboard_enabled then
+            if love.keyboard.isDown("lctrl") and key == "v" then
+                local clipboard = love.system.getClipboardText()
+                if clipboard then
+                    system.chattext = system.chattext..clipboard
+                end
+            elseif key == "escape" then
+                keys_disabled = true
+                keyboard_enabled = false
+                system.chattext = nil
+            elseif key == "return" then
+                keys_disabled = true
+                keyboard_enabled = false
+                local prefix
+                if system.chattext and type(env.PUBLIC_REGISTRY) == "table" then
+                    prefix = rawget(env.PUBLIC_REGISTRY, "keyboard_prefix")
+                end
+                fos_system.call(fos_system.events.CHAT_SEND_MESSAGE, tostring(prefix or "")..(system.chattext or ""))
+                system.chattext = nil
+            elseif key == "backspace" and system.chattext then
+                system.chattext = system.chattext:sub(1, -2)
+            end
+        else
+            if key == "t" or key == "/" then
+                keyboard_enabled = true
             end
         end
     end)
