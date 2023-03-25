@@ -42,7 +42,7 @@ function love.update(delta)
         tick = tick % 1
         fos_system.call(fos_system.events.TICK)
     end
-    fos_system.call(fos_system.events.RENDER, math.floor(tick * 1000) / 1000)
+    fos_system.call(fos_system.events.RENDER, math.floor(tick * 1000) / 1000, "FIRST_PERSON")
 
     if not fos_system.error then 
         for _, v in ipairs(fos_system.update) do
